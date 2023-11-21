@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+          box-sizing: border-box;
+        }
+        
+        /* Create two equal columns that floats next to each other */
+        .column {
+          float: left;
+          width: 33.33%;
+          padding: 0px;
+          height: 40px; /* Should be removed. Only for demonstration */
+        }
+        
+        /* Clear floats after the columns */
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+    </style>
+
+
+    <title>Guess the PNG</title>
+    <script>
+        var imageList = [
+        'pictures/CARBONIFEROUS1.png',
+        'pictures/CARBONIFEROUS2.png',
+        'pictures/CRETACEOUS1.png',
+        'pictures/CRETACEOUS2.png',
+        'pictures/Ediacaran1.png',
+        'pictures/EOCENE1.png',
+        'pictures/Ordovician1.png',
+        'pictures/Permian1.png'
+            // Add more image paths as needed
+        ];
+
+        let currentImageIndex = -1;
+
+        var score = 0;
+        var streak = 0;
+        var revealed = false
+
+        // Function to display a random PNG image
+        function displayRandomImage() {
+            const randomIndex = getRandomIndex();
+            if (randomIndex === currentImageIndex) {
+                // If it's the same image, try again
+                displayRandomImage();
+                return;
+            }
+            currentImageIndex = randomIndex;
+            const imageUrl = imageList[randomIndex];
+            
+            const img = new Image();
+            img.onload = () => cb(null, img);
+            img.onerror = (err) => cb(err);
+            img.src = imageUrl;
+
+            let imgw = "auto"//img.naturalWidth
+            var imgh = 550
+
+
+            document.getElementById('image-container').innerHTML = `<img src="${imageUrl}" alt="Random PNG Image" width = "${imgw}" height = "${imgh}"/>`;
+
+            let input1 = document.getElementById('guess-input')
+            input1.value = "";
+            document.getElementById('reveal').outerHTML = `<button onclick="revealAnswer()" id = "reveal">Reveal answer</button>`;
+            revealed = false
+
+        }
+
+        // Function to get a random index within the image list
+        function getRandomIndex() {
+            return Math.floor(Math.random() * imageList.length);
+        }
+
+        // Function to check if the guessed file name is correct
+        function checkGuess() {
+            const guessedFileName = document.getElementById('guess-input').value.toLowerCase();
+            const currentImageUrl = imageList[currentImageIndex];
+            const fileNameWithoutExtension = currentImageUrl.split('/').pop().replace(/\.[^/.]+$/, '').replace(/[0-9]/g, '').toLowerCase();
+            
+            if (guessedFileName === fileNameWithoutExtension) {
+                if (!revealed) {
+                    score += 1
+                    streak += 1
+                }
+                
+
+                element1 = document.getElementById("scoredoc");
+                element1.innerHTML = "Score: " + score;
+
+                element2 = document.getElementById("streakdoc");
+                element2.innerHTML = "Streak: " + streak;
+
+                alert('Correct guess! Here\'s a new image.');
+                displayRandomImage();
+            } else {
+                streak = 0
+                element2 = document.getElementById("streakdoc");
+                element2.innerHTML = "Streak: " + streak;
+                
+                alert('Incorrect guess. Try again.');
+            }
+            
+        }
+
+        function revealAnswer() {
+            const currentImageUrl = imageList[currentImageIndex];
+            const fileNameWithoutExtension = currentImageUrl.split('/').pop().replace(/\.[^/.]+$/, '').replace(/[0-9]/g, '').toUpperCase();
+
+            document.getElementById('reveal').outerHTML = `<button onclick="displayRandomImage()" id = "reveal">${fileNameWithoutExtension}</button>`;
+            
+            streak = 0
+            //score -= 1
+            element2 = document.getElementById("streakdoc");
+            element2.innerHTML = "Streak: " + streak;
+            revealed = true
+
+        }
+
+        function showBank() {
+            document.getElementById('bank').outerHTML = `<button onclick="hideBank()" id = "bank"> Archean Ediacaran Cambrian Ordovician Silurian* Devonian Carboniferous Permian Triassic Jurassic Cretaceous Paleocene Eocene Oligocene Miocene Pleistocene </button>`;
+        }
+
+        function hideBank() {
+            document.getElementById('bank').outerHTML = `<button onclick="showBank()" id = "bank"> Reveal Bank </button>`;
+        }
+    </script>
+</head>
+<body> 
+    <div class="row">
+        <div class="column left">
+          <p>Guess the PNG</p>
+        </div>
+        <div class="column middle">
+          <p type = "text" id = "scoredoc">Score: 0</p>
+        </div>
+        <div class="column right">
+          <p type = "text" id = "streakdoc">Streak: 0</p>
+        </div>
+    </div>
+
+    <div id="image-container">
+        <!-- Initially empty; filled by JavaScript -->
+    </div>
+    <br>
+    <input type="text" id="guess-input" placeholder="Enter the file name (without .png)">
+    <script>
+        const textInput = document.getElementById('guess-input');
+        textInput.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter') {
+            console.log('Enter key pressed!');
+            checkGuess()
+          }
+        });
+    </script>
+    <button onclick="checkGuess()">Guess</button><button id="reveal">placehold</button> 
+    <br>
+    <button onclick="displayRandomImage()">Get a new random image</button> <button onclick="showBank()" id = "bank"> Reveal Bank </button>
+
+    <script>
+        // Initially display a random image when the page loads
+        displayRandomImage();
+    </script>
+
+    <!--
+    Archean
+    Ediacaran
+
+    Cambrian
+    Ordovician
+    Silurian*
+    Devonian
+    Carboniferous
+    Permian
+
+    Triassic
+    Jurassic
+    Cretaceous
+
+    Paleocene
+    Eocene
+    Oligocene
+    Miocene
+    Pleistocene
+    -->
+</body>
+</html>

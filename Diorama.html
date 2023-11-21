@@ -76,6 +76,7 @@
 
         var score = 0;
         var streak = 0;
+        var numimg = 0;
         var revealed = false
 
         // Function to display a random PNG image
@@ -96,6 +97,8 @@
 
             let imgw = "auto"//img.naturalWidth
             var imgh = 550
+
+            numimg += 1;
 
 
             document.getElementById('image-container').innerHTML = `<img src="${imageUrl}" alt="Random PNG Image" width = "${imgw}" height = "${imgh}"/>`;
@@ -131,9 +134,22 @@
                 element2 = document.getElementById("streakdoc");
                 element2.innerHTML = "Streak: " + streak;
 
+                element3 = document.getElementById("scoredocP");
+                element3.innerHTML = "Score Percent: " + score/numimg*100 + "%";
+
+                
+
+
                 alert('Correct guess! Here\'s a new image.');
                 displayRandomImage();
             } else {
+
+                element3 = document.getElementById("scoredocP");
+                numimg += 1;
+                element3.innerHTML = "Score Percent: " + score/numimg*100 + "%";
+
+                element4 = document.getElementById("Lstreakdoc");
+                element4.innerHTML = "LastStreak: " + streak;
                 streak = 0
                 element2 = document.getElementById("streakdoc");
                 element2.innerHTML = "Streak: " + streak;
@@ -148,7 +164,14 @@
             const fileNameWithoutExtension = currentImageUrl.split('/').pop().replace(/\.[^/.]+$/, '').replace(/[0-9]/g, '').toUpperCase();
 
             document.getElementById('reveal').outerHTML = `<button onclick="displayRandomImage()" id = "reveal">${fileNameWithoutExtension}</button>`;
-            
+
+            element3 = document.getElementById("scoredocP");
+            numimg += 1;
+            element3.innerHTML = "Score Percent: " + score/numimg*100 + "%";
+
+
+            element4 = document.getElementById("Lstreakdoc");
+            element4.innerHTML = "LastStreak: " + streak;
             streak = 0
             //score -= 1
             element2 = document.getElementById("streakdoc");
@@ -178,6 +201,19 @@
           <p type = "text" id = "streakdoc">Streak: 0</p>
         </div>
     </div>
+
+    <div class="row">
+        <div class="column left">
+          <p>Idk what text here</p>
+        </div>
+        <div class="column middle">
+          <p type = "text" id = "scoredocP">Score Percent: 0%</p>
+        </div>
+        <div class="column right">
+          <p type = "text" id = "Lstreakdoc">Last Streak: 0</p>
+        </div>
+    </div>
+
 
     <div id="image-container">
         <!-- Initially empty; filled by JavaScript -->
